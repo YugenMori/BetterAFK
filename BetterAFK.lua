@@ -104,6 +104,7 @@ local function AFKCamInit()
 	local AbyssUI_AFKCamera = CreateFrame("Frame", "$parentAbyssUI_AFKCamera", nil)
 	AbyssUI_AFKCamera:RegisterEvent("PLAYER_FLAGS_CHANGED")
 	AbyssUI_AFKCamera:RegisterEvent("PLAYER_ENTERING_WORLD")
+	AbyssUI_AFKCamera:RegisterEvent("PLAYER_STARTED_MOVING")
 	----------------------------------------------------
 	-- ModelFrameAFKMode
 	-- Model1
@@ -644,7 +645,7 @@ local function AFKCamInit()
 -- AbyssUI_AFKCamera SetScript
 	AbyssUI_AFKCamera:SetScript("OnEvent", function(self, event, ...)
 		local inInstance, instanceType = IsInInstance()
-		if (AbyssUIAddonSettings.AFKCammeraFrame ~= true) then
+		if (AbyssUIAddonSettings.AFKCammeraFrame ~= true) then 
 			if (event == "PLAYER_FLAGS_CHANGED" or event == "PLAYER_ENTERING_WORLD") then
 				PlayerModelRandomAnimation()
 				local isAFK = UnitIsAFK("player")
@@ -684,15 +685,16 @@ local function AFKCamInit()
 				AbyssUI_AFKCameraFrame:SetScript("OnMouseDown", function (self, button)
 				    if (button == 'LeftButton') then 
 				    	AbyssUI_AFKCameraFrame:Hide()
-						UIParent:SetAlpha(1)
-						if AbyssUIAddonSettings.HideMinimap ~= true then
-							MinimapCluster:Show()
-						end
+							UIParent:SetAlpha(1)
+							if AbyssUIAddonSettings.HideMinimap ~= true then
+								MinimapCluster:Show()
+							end
+							if UnitIsAFK("player") then
+        				SendChatMessage("", "AFK")
+        			end
 				    end
 				end)
 			end
-		else
-			return nil
 		end
 	end)
 end
