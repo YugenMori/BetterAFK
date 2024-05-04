@@ -89,8 +89,8 @@ local function AFKCamInit()
 	AbyssUI_AFKCameraFrame.text = AbyssUI_AFKCameraFrame.text or AbyssUI_AFKCameraFrame:CreateFontString(nil, "ARTWORK", "QuestMapRewardsFont")
 	AbyssUI_AFKCameraFrame.text:SetScale(3)
 	AbyssUI_AFKCameraFrame.text:SetAllPoints(true)
-	AbyssUI_AFKCameraFrame.text:SetJustifyH("BOTTOM")
-	AbyssUI_AFKCameraFrame.text:SetJustifyV("BOTTOM")
+	AbyssUI_AFKCameraFrame.text:ClearAllPoints()
+	AbyssUI_AFKCameraFrame.text:SetPoint("BOTTOM", 0, -200)
 	AbyssUI_AFKCameraFrame.text:SetWidth(GetScreenWidth()/4)
 	AbyssUI_AFKCameraFrame.text:SetHeight(GetScreenHeight()/2)
 	AbyssUI_AFKCameraFrame.text:SetText(L["Move"])
@@ -110,10 +110,10 @@ local function AFKCamInit()
 	-- Model1
 	local AbyssUI_ModelFrameAFKMode = CreateFrame("Frame", "$parentAbyssUI_ModelFrameAFKMode", AbyssUI_AFKCameraFrame)
 	AbyssUI_ModelFrameAFKMode:SetPoint("BOTTOMRIGHT", 5, 5)
-	if (GetWoWVersion <= 90500) then
+	if (GetWoWVersion <= 30500) then
 		AbyssUI_ModelFrameAFKMode:SetWidth(CharacterModelFrame:GetWidth()*2)
 		AbyssUI_ModelFrameAFKMode:SetHeight(CharacterModelFrame:GetHeight()*2)
-	elseif (GetWoWVersion >= 90500) then
+	elseif (GetWoWVersion >= 40000) then
 		AbyssUI_ModelFrameAFKMode:SetWidth(CharacterModelScene:GetWidth()*2)
 		AbyssUI_ModelFrameAFKMode:SetHeight(CharacterModelScene:GetHeight()*2)
 	end
@@ -123,12 +123,6 @@ local function AFKCamInit()
 	ModelFrame_Model1:SetAlpha(1)
 	ModelFrame_Model1:SetAllPoints(AbyssUI_ModelFrameAFKMode)
 	ModelFrame_Model1:SetCustomCamera(1)
-	--local x, y, z = ModelFrame_Model1:GetCameraPosition()
-	--[[
-	local AnimationsSequence = { 5, 60, 67, 96, }
-	local Animations = #AnimationsSequence
-	ModelFrame_Model1:SetAnimation(AnimationsSequence[random(1, Animations)])
-	--]]
 	----------------------------------------------------
 	-- PlayerInfoAFKMode
 	-- Name
@@ -168,7 +162,7 @@ local function AFKCamInit()
 	PlayerInfo_Class1.text:SetText(playerClass)
 	-- Current Specialization
 	local PlayerInfo_CurrentSpec1 = CreateFrame("Frame", "$parentPlayerInfo_CurrentSpec1", AbyssUI_AFKCameraFrame)
-	if (GetWoWVersion > 30600) then
+	if (GetWoWVersion > 50600) then
 		local currentSpec = GetSpecialization()
 		local currentSpecName = currentSpec and select(2, GetSpecializationInfo(currentSpec)) or "None"
 		PlayerInfo_CurrentSpec1:SetAllPoints(AbyssUI_AFKCameraFrame)
@@ -183,7 +177,7 @@ local function AFKCamInit()
 	PlayerInfo_Level1:SetAllPoints(AbyssUI_AFKCameraFrame)
 	PlayerInfo_Level1:SetScale(3)
 	PlayerInfo_Level1.text = PlayerInfo_Level1.text or PlayerInfo_Level1:CreateFontString(nil, "ARTWORK", "QuestMapRewardsFont")
-	if (GetWoWVersion > 30600) then 
+	if (GetWoWVersion > 50600) then 
 		PlayerInfo_Level1.text:SetPoint("BOTTOMLEFT", 5, 70)
 	else
 		PlayerInfo_Level1.text:SetPoint("BOTTOMLEFT", 5, 80)
@@ -194,20 +188,24 @@ local function AFKCamInit()
 	PlayerInfo_Honor1:SetAllPoints(AbyssUI_AFKCameraFrame)
 	PlayerInfo_Honor1:SetScale(3)
 	PlayerInfo_Honor1.text = PlayerInfo_Honor1.text or PlayerInfo_Honor1:CreateFontString(nil, "ARTWORK", "QuestMapRewardsFont")
-	if (GetWoWVersion > 30600) then
+	if (GetWoWVersion > 50600) then
 		PlayerInfo_Honor1.text:SetPoint("BOTTOMLEFT", 5, 60)
 		local HonorLevel = UnitHonorLevel("player")
 		PlayerInfo_Honor1.text:SetText(L["Honor: "]..HonorLevel)
 	end
 	-- Item Level
 	local PlayerInfo_ILevel1 = CreateFrame("Frame", "$parentPlayerInfo_ILevel1", AbyssUI_AFKCameraFrame)
-	if (GetWoWVersion > 30600) then
-		local overall, equipped = GetAverageItemLevel()
-		PlayerInfo_ILevel1:SetAllPoints(AbyssUI_AFKCameraFrame)
-		PlayerInfo_ILevel1:SetScale(3)
-		PlayerInfo_ILevel1.text = PlayerInfo_ILevel1.text or PlayerInfo_ILevel1:CreateFontString(nil, "ARTWORK", "QuestMapRewardsFont")
+if (GetWoWVersion > 30600) then
+	local overall, equipped = GetAverageItemLevel()
+	PlayerInfo_ILevel1:SetAllPoints(AbyssUI_AFKCameraFrame)
+	PlayerInfo_ILevel1:SetScale(3)
+	PlayerInfo_ILevel1.text = PlayerInfo_ILevel1.text or PlayerInfo_ILevel1:CreateFontString(nil, "ARTWORK", "QuestMapRewardsFont")
+	if (GetWoWVersion > 50600) then
 		PlayerInfo_ILevel1.text:SetPoint("BOTTOMLEFT", 5, 50)
-		PlayerInfo_ILevel1.text:SetText(L["Item Level: "]..floor(overall + 0.5))
+	else
+		PlayerInfo_ILevel1.text:SetPoint("BOTTOMLEFT", 5, 70)
+	end
+	PlayerInfo_ILevel1.text:SetText(L["Item Level: "]..floor(overall + 0.5))
 	end
 	-- Zone
 	local PlayerInfo_CurrentZone1 = CreateFrame("Frame", "$parentPlayerInfo_CurrentZone1", AbyssUI_AFKCameraFrame)
@@ -215,10 +213,14 @@ local function AFKCamInit()
 	PlayerInfo_CurrentZone1:SetAllPoints(AbyssUI_AFKCameraFrame)
 	PlayerInfo_CurrentZone1:SetScale(3)
 	PlayerInfo_CurrentZone1.text = PlayerInfo_CurrentZone1.text or PlayerInfo_CurrentZone1:CreateFontString(nil, "ARTWORK", "QuestMapRewardsFont")
-	if (GetWoWVersion > 30600) then
+	if (GetWoWVersion > 50600) then
 		PlayerInfo_CurrentZone1.text:SetPoint("BOTTOMLEFT", 5, 40)
 	else
-		PlayerInfo_CurrentZone1.text:SetPoint("BOTTOMLEFT", 5, 70)
+		if (GetWoWVersion < 30000) then
+			PlayerInfo_CurrentZone1.text:SetPoint("BOTTOMLEFT", 5, 70)
+		else
+			PlayerInfo_CurrentZone1.text:SetPoint("BOTTOMLEFT", 5, 60)
+		end
 	end
 	PlayerInfo_CurrentZone1.text:SetText(zoneName)
 	-- Guild Info
@@ -227,10 +229,10 @@ local function AFKCamInit()
 	PlayerInfo_Guild1:SetAllPoints(AbyssUI_AFKCameraFrame)
 	PlayerInfo_Guild1:SetScale(3)
 	PlayerInfo_Guild1.text = PlayerInfo_Guild1.text or PlayerInfo_Guild1:CreateFontString(nil, "ARTWORK", "QuestMapRewardsFont")
-	if (GetWoWVersion > 30600) then
+	if (GetWoWVersion > 50600) then
 		PlayerInfo_Guild1.text:SetPoint("BOTTOMLEFT", 5, 30)
 	else
-		PlayerInfo_Guild1.text:SetPoint("BOTTOMLEFT", 5, 60)
+		PlayerInfo_Guild1.text:SetPoint("BOTTOMLEFT", 5, 50)
 	end
 	PlayerInfo_Guild1.text:SetText(guildName)
 	-- CLock
@@ -282,10 +284,12 @@ local function AFKCamInit()
 			ExtraInfo_Clock1,
 		PlayerInfo_GoldAmount1 }) do
 			if (GetWoWVersion > 30600) then 
-				v.text:SetVertexColor(51/255, 147/255, 127/255)
-				PlayerInfo_Honor1.text:SetVertexColor(51/255, 147/255, 127/255)
-				PlayerInfo_CurrentSpec1.text:SetVertexColor(51/255, 147/255, 127/255)
-			end
+			v.text:SetVertexColor(51/255, 147/255, 127/255)
+		end
+		if (GetWoWVersion > 50600) then
+			PlayerInfo_Honor1.text:SetVertexColor(51/255, 147/255, 127/255)
+			PlayerInfo_CurrentSpec1.text:SetVertexColor(51/255, 147/255, 127/255)
+		end
 		end 
 	elseif (englishClass == "DEATHKNIGHT") then
 		for i, v in pairs({
@@ -300,11 +304,13 @@ local function AFKCamInit()
 			PlayerInfo_Guild1,
 			ExtraInfo_Clock1,
 		PlayerInfo_GoldAmount1 }) do
-			if (GetWoWVersion > 30600) then 
-				v.text:SetVertexColor(196/255, 30/255, 59/255)
-				PlayerInfo_Honor1.text:SetVertexColor(196/255, 30/255, 59/255)
-				PlayerInfo_CurrentSpec1.text:SetVertexColor(196/255, 30/255, 59/255)
-			end
+		if (GetWoWVersion > 30600) then 
+			v.text:SetVertexColor(196/255, 30/255, 59/255)
+		end
+		if (GetWoWVersion > 50600) then
+			PlayerInfo_Honor1.text:SetVertexColor(196/255, 30/255, 59/255)
+			PlayerInfo_CurrentSpec1.text:SetVertexColor(196/255, 30/255, 59/255)
+		end
 		end 
 	elseif (englishClass == "DEMONHUNTER") then
 		for i, v in pairs({ 
@@ -321,6 +327,8 @@ local function AFKCamInit()
 		PlayerInfo_GoldAmount1 }) do
 			if (GetWoWVersion > 30600) then 
 				v.text:SetVertexColor(163/255, 48/255, 201/255)
+			end
+			if (GetWoWVersion > 50600) then
 				PlayerInfo_Honor1.text:SetVertexColor(163/255, 48/255, 201/255)
 				PlayerInfo_CurrentSpec1.text:SetVertexColor(163/255, 48/255, 201/255)
 			end
@@ -340,6 +348,8 @@ local function AFKCamInit()
 		PlayerInfo_GoldAmount1 }) do
 			if (GetWoWVersion > 30600) then 
 				v.text:SetVertexColor(255/255, 125/255, 10/255)
+			end
+			if (GetWoWVersion > 50600) then
 				PlayerInfo_Honor1.text:SetVertexColor(255/255, 125/255, 10/255)
 				PlayerInfo_CurrentSpec1.text:SetVertexColor(255/255, 125/255, 10/255)
 			end
@@ -361,6 +371,8 @@ local function AFKCamInit()
 		PlayerInfo_GoldAmount1 }) do
 			if (GetWoWVersion > 30600) then 
 				v.text:SetVertexColor(171/255, 212/255, 115/255)
+			end
+			if (GetWoWVersion > 50600) then
 				PlayerInfo_Honor1.text:SetVertexColor(171/255, 212/255, 115/255)
 				PlayerInfo_CurrentSpec1.text:SetVertexColor(171/255, 212/255, 115/255)
 			end
@@ -382,6 +394,8 @@ local function AFKCamInit()
 		PlayerInfo_GoldAmount1 }) do
 			if (GetWoWVersion > 30600) then 
 				v.text:SetVertexColor(105/255, 204/255, 240/255)
+			end
+			if (GetWoWVersion > 50600) then
 				PlayerInfo_Honor1.text:SetVertexColor(105/255, 204/255, 240/255)
 				PlayerInfo_CurrentSpec1.text:SetVertexColor(105/255, 204/255, 240/255)
 			end
@@ -403,6 +417,8 @@ local function AFKCamInit()
 		PlayerInfo_GoldAmount1 }) do
 			if (GetWoWVersion > 30600) then 
 				v.text:SetVertexColor(0/255, 255/255, 150/255)
+			end
+			if (GetWoWVersion > 50600) then
 				PlayerInfo_Honor1.text:SetVertexColor(0/255, 255/255, 150/255)
 				PlayerInfo_CurrentSpec1.text:SetVertexColor(0/255, 255/255, 150/255)
 			end
@@ -424,6 +440,8 @@ local function AFKCamInit()
 		PlayerInfo_GoldAmount1 }) do
 			if (GetWoWVersion > 30600) then 
 				v.text:SetVertexColor(245/255, 140/255, 186/255)
+			end
+			if (GetWoWVersion > 50600) then
 				PlayerInfo_Honor1.text:SetVertexColor(245/255, 140/255, 186/255)
 				PlayerInfo_CurrentSpec1.text:SetVertexColor(245/255, 140/255, 186/255)			
 			end
@@ -445,6 +463,8 @@ local function AFKCamInit()
 		PlayerInfo_GoldAmount1 }) do
 			if (GetWoWVersion > 30600) then 
 				v.text:SetVertexColor(255/255, 255/255, 255/255)
+			end
+			if (GetWoWVersion > 50600) then
 				PlayerInfo_Honor1.text:SetVertexColor(255/255, 255/255, 255/255)
 				PlayerInfo_CurrentSpec1.text:SetVertexColor(255/255, 255/255, 255/255)			
 			end
@@ -466,6 +486,8 @@ local function AFKCamInit()
 		PlayerInfo_GoldAmount1 }) do
 			if (GetWoWVersion > 30600) then 
 				v.text:SetVertexColor(255/255, 245/255, 105/255)
+			end
+			if (GetWoWVersion > 50600) then
 				PlayerInfo_Honor1.text:SetVertexColor(255/255, 245/255, 105/255)
 				PlayerInfo_CurrentSpec1.text:SetVertexColor(255/255, 245/255, 105/255)
 			end
@@ -487,6 +509,8 @@ local function AFKCamInit()
 		PlayerInfo_GoldAmount1 }) do
 			if (GetWoWVersion > 30600) then 
 				v.text:SetVertexColor(0/255, 112/255, 222/255)
+			end
+			if (GetWoWVersion > 50600) then
 				PlayerInfo_Honor1.text:SetVertexColor(0/255, 112/255, 222/255)
 				PlayerInfo_CurrentSpec1.text:SetVertexColor(0/255, 112/255, 222/255)
 			end
@@ -508,6 +532,8 @@ local function AFKCamInit()
 		PlayerInfo_GoldAmount1 }) do
 			if (GetWoWVersion > 30600) then 
 				v.text:SetVertexColor(148/255, 130/255, 201/255)
+			end
+			if (GetWoWVersion > 50600) then
 				PlayerInfo_Honor1.text:SetVertexColor(148/255, 130/255, 201/255)
 				PlayerInfo_CurrentSpec1.text:SetVertexColor(148/255, 130/255, 201/255)			
 			end
@@ -529,6 +555,8 @@ local function AFKCamInit()
 		PlayerInfo_GoldAmount1 }) do
 			if (GetWoWVersion > 30600) then 
 				v.text:SetVertexColor(199/255, 156/255, 110/255)
+			end
+			if (GetWoWVersion > 50600) then
 				PlayerInfo_Honor1.text:SetVertexColor(199/255, 156/255, 110/255)
 				PlayerInfo_CurrentSpec1.text:SetVertexColor(199/255, 156/255, 110/255)	
 			end
@@ -597,7 +625,7 @@ local function AFKCamInit()
 		else
 			ExtraInfo_Clock1.text:SetText(dataTime)
 		end
-		if (GetWoWVersion > 30600) then
+		if (GetWoWVersion > 50600) then
 			local HonorLevel = UnitHonorLevel("player")
 			local overall, equipped = GetAverageItemLevel()
 			local currentSpec = GetSpecialization()
