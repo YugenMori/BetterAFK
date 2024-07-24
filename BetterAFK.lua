@@ -104,7 +104,6 @@ local function AFKCamInit()
 	local AbyssUI_AFKCamera = CreateFrame("Frame", "$parentAbyssUI_AFKCamera", nil)
 	AbyssUI_AFKCamera:RegisterEvent("PLAYER_FLAGS_CHANGED")
 	AbyssUI_AFKCamera:RegisterEvent("PLAYER_ENTERING_WORLD")
-	AbyssUI_AFKCamera:RegisterEvent("PLAYER_STARTED_MOVING")
 	----------------------------------------------------
 	-- ModelFrameAFKMode
 	-- Model1
@@ -195,17 +194,17 @@ local function AFKCamInit()
 	end
 	-- Item Level
 	local PlayerInfo_ILevel1 = CreateFrame("Frame", "$parentPlayerInfo_ILevel1", AbyssUI_AFKCameraFrame)
-if (GetWoWVersion > 30600) then
-	local overall, equipped = GetAverageItemLevel()
-	PlayerInfo_ILevel1:SetAllPoints(AbyssUI_AFKCameraFrame)
-	PlayerInfo_ILevel1:SetScale(3)
-	PlayerInfo_ILevel1.text = PlayerInfo_ILevel1.text or PlayerInfo_ILevel1:CreateFontString(nil, "ARTWORK", "QuestMapRewardsFont")
-	if (GetWoWVersion > 50600) then
-		PlayerInfo_ILevel1.text:SetPoint("BOTTOMLEFT", 5, 50)
-	else
-		PlayerInfo_ILevel1.text:SetPoint("BOTTOMLEFT", 5, 70)
-	end
-	PlayerInfo_ILevel1.text:SetText(L["Item Level: "]..floor(overall + 0.5))
+	if (GetWoWVersion > 30600) then
+		local overall, equipped = GetAverageItemLevel()
+		PlayerInfo_ILevel1:SetAllPoints(AbyssUI_AFKCameraFrame)
+		PlayerInfo_ILevel1:SetScale(3)
+		PlayerInfo_ILevel1.text = PlayerInfo_ILevel1.text or PlayerInfo_ILevel1:CreateFontString(nil, "ARTWORK", "QuestMapRewardsFont")
+		if (GetWoWVersion > 50600) then
+			PlayerInfo_ILevel1.text:SetPoint("BOTTOMLEFT", 5, 50)
+		else
+			PlayerInfo_ILevel1.text:SetPoint("BOTTOMLEFT", 5, 70)
+		end
+		PlayerInfo_ILevel1.text:SetText(L["Item Level: "]..floor(overall + 0.5))
 	end
 	-- Zone
 	local PlayerInfo_CurrentZone1 = CreateFrame("Frame", "$parentPlayerInfo_CurrentZone1", AbyssUI_AFKCameraFrame)
@@ -248,7 +247,7 @@ if (GetWoWVersion > 30600) then
 	ExtraInfo_Faction1:SetHeight(64)
 	ExtraInfo_Faction1:SetPoint("TOPLEFT", 5, -5)
 	ExtraInfo_Faction1:SetScale(3)
-	if (GetWoWVersion ~= 30401) then
+	if (GetWoWVersion >= 50500) then
 		local t = ExtraInfo_Faction1:CreateTexture(nil, "BACKGROUND")
 			if (englishFaction == "Horde") then
 				t:SetTexture("Interface\\AddOns\\AbyssUI\\textures\\extra\\Horde-Logo")
@@ -284,12 +283,12 @@ if (GetWoWVersion > 30600) then
 			ExtraInfo_Clock1,
 		PlayerInfo_GoldAmount1 }) do
 			if (GetWoWVersion > 30600) then 
-			v.text:SetVertexColor(51/255, 147/255, 127/255)
-		end
-		if (GetWoWVersion > 50600) then
-			PlayerInfo_Honor1.text:SetVertexColor(51/255, 147/255, 127/255)
-			PlayerInfo_CurrentSpec1.text:SetVertexColor(51/255, 147/255, 127/255)
-		end
+				v.text:SetVertexColor(51/255, 147/255, 127/255)
+			end
+			if (GetWoWVersion > 50600) then
+				PlayerInfo_Honor1.text:SetVertexColor(51/255, 147/255, 127/255)
+				PlayerInfo_CurrentSpec1.text:SetVertexColor(51/255, 147/255, 127/255)
+			end
 		end 
 	elseif (englishClass == "DEATHKNIGHT") then
 		for i, v in pairs({
@@ -304,13 +303,13 @@ if (GetWoWVersion > 30600) then
 			PlayerInfo_Guild1,
 			ExtraInfo_Clock1,
 		PlayerInfo_GoldAmount1 }) do
-		if (GetWoWVersion > 30600) then 
-			v.text:SetVertexColor(196/255, 30/255, 59/255)
-		end
-		if (GetWoWVersion > 50600) then
-			PlayerInfo_Honor1.text:SetVertexColor(196/255, 30/255, 59/255)
-			PlayerInfo_CurrentSpec1.text:SetVertexColor(196/255, 30/255, 59/255)
-		end
+			if (GetWoWVersion > 30600) then 
+				v.text:SetVertexColor(196/255, 30/255, 59/255)
+			end
+			if (GetWoWVersion > 50600) then
+				PlayerInfo_Honor1.text:SetVertexColor(196/255, 30/255, 59/255)
+				PlayerInfo_CurrentSpec1.text:SetVertexColor(196/255, 30/255, 59/255)
+			end
 		end 
 	elseif (englishClass == "DEMONHUNTER") then
 		for i, v in pairs({ 
@@ -362,9 +361,7 @@ if (GetWoWVersion > 30600) then
 			PlayerInfo_Level1, 
 			PlayerInfo_Race1, 
 			PlayerInfo_Class1,
-			PlayerInfo_Honor1,
 			PlayerInfo_ILevel1,
-			PlayerInfo_CurrentSpec1,
 			PlayerInfo_CurrentZone1,
 			PlayerInfo_Guild1,
 			ExtraInfo_Clock1,
@@ -385,9 +382,7 @@ if (GetWoWVersion > 30600) then
 			PlayerInfo_Level1, 
 			PlayerInfo_Race1, 
 			PlayerInfo_Class1,
-			PlayerInfo_Honor1,
 			PlayerInfo_ILevel1,
-			PlayerInfo_CurrentSpec1,
 			PlayerInfo_CurrentZone1,
 			PlayerInfo_Guild1,
 			ExtraInfo_Clock1,
@@ -408,9 +403,7 @@ if (GetWoWVersion > 30600) then
 			PlayerInfo_Level1, 
 			PlayerInfo_Race1, 
 			PlayerInfo_Class1,
-			PlayerInfo_Honor1,
 			PlayerInfo_ILevel1,
-			PlayerInfo_CurrentSpec1,
 			PlayerInfo_CurrentZone1,
 			PlayerInfo_Guild1,
 			ExtraInfo_Clock1,
@@ -431,9 +424,7 @@ if (GetWoWVersion > 30600) then
 			PlayerInfo_Level1, 
 			PlayerInfo_Race1, 
 			PlayerInfo_Class1,
-			PlayerInfo_Honor1,
 			PlayerInfo_ILevel1,
-			PlayerInfo_CurrentSpec1,
 			PlayerInfo_CurrentZone1,
 			PlayerInfo_Guild1,
 			ExtraInfo_Clock1,
@@ -454,9 +445,7 @@ if (GetWoWVersion > 30600) then
 			PlayerInfo_Level1, 
 			PlayerInfo_Race1, 
 			PlayerInfo_Class1,
-			PlayerInfo_Honor1,
 			PlayerInfo_ILevel1,
-			PlayerInfo_CurrentSpec1,
 			PlayerInfo_CurrentZone1,
 			PlayerInfo_Guild1,
 			ExtraInfo_Clock1,
@@ -477,9 +466,7 @@ if (GetWoWVersion > 30600) then
 			PlayerInfo_Level1, 
 			PlayerInfo_Race1, 
 			PlayerInfo_Class1,
-			PlayerInfo_Honor1,
 			PlayerInfo_ILevel1,
-			PlayerInfo_CurrentSpec1,
 			PlayerInfo_CurrentZone1,
 			PlayerInfo_Guild1,
 			ExtraInfo_Clock1,
@@ -500,9 +487,7 @@ if (GetWoWVersion > 30600) then
 			PlayerInfo_Level1, 
 			PlayerInfo_Race1, 
 			PlayerInfo_Class1,
-			PlayerInfo_Honor1,
 			PlayerInfo_ILevel1,
-			PlayerInfo_CurrentSpec1,
 			PlayerInfo_CurrentZone1,
 			PlayerInfo_Guild1,
 			ExtraInfo_Clock1,
@@ -523,9 +508,7 @@ if (GetWoWVersion > 30600) then
 			PlayerInfo_Level1, 
 			PlayerInfo_Race1, 
 			PlayerInfo_Class1,
-			PlayerInfo_Honor1,
 			PlayerInfo_ILevel1,
-			PlayerInfo_CurrentSpec1,
 			PlayerInfo_CurrentZone1,
 			PlayerInfo_Guild1,
 			ExtraInfo_Clock1,
@@ -546,9 +529,7 @@ if (GetWoWVersion > 30600) then
 			PlayerInfo_Level1, 
 			PlayerInfo_Race1, 
 			PlayerInfo_Class1,
-			PlayerInfo_Honor1,
 			PlayerInfo_ILevel1,
-			PlayerInfo_CurrentSpec1,
 			PlayerInfo_CurrentZone1,
 			PlayerInfo_Guild1,
 			ExtraInfo_Clock1,
